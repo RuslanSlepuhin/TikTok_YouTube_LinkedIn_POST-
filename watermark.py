@@ -3,7 +3,8 @@ from moviepy.editor import *
 import moviepy.editor as mpy
 
 
-video1 = VideoFileClip("video.mp4")  # Путь к файлу
+video1 = mpy.VideoFileClip("video.mp4")  # Путь к файлу
+video1_re = video1.resize(width=720)
 
 # logo = (ImageClip("smile.jpeg", transparent=True)  # Ваш логотип
 #         .set_duration(video1.duration)  # Устанавливаем длительность показа логотипа равную длительности всего видео
@@ -25,7 +26,7 @@ txt = txt.set_duration(6)
 txt = txt.crossfadein(0.5)
 txt = txt.crossfadeout(0.5)
 
-final_clip = mpy.CompositeVideoClip([video1, txt])
+final_clip = mpy.CompositeVideoClip([video1_re, txt])
 
 
 final_clip.write_videofile("video_text_done.mp4", audio=True)  # Записываем в финальный файл

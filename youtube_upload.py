@@ -2,11 +2,14 @@ import json
 import os
 import time
 from random import randrange
+
+from flask import Flask
 from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+import flask
 
 '''
 !!!! Usefull links !!!!! 
@@ -30,6 +33,7 @@ SCOPES = [
     # 'https://www.googleapis.com/auth/userinfo.email'
 ]
 
+server = Flask(__name__)
 
 '''
 Ask from console
@@ -87,8 +91,12 @@ def get_service_creds(service = 'youtube', version = 'v3'):
 #     r = get_service().userinfo().get().execute()
 #     print(json.dumps(r))
 
+@server.route('/')
+def description():
+    return 'For upload video to youtube you must go /upload'
 
-def video_upload(video_path, title, **kwargs):
+@server.route('/upload')
+def video_upload(video_path='video_text_done.mp4', title='TikTok', **kwargs):
     print("** upload video")
 
     # chunksize размер блока в БАЙТАХ (int), чем хуже соединение, тем мельче блок
@@ -121,6 +129,8 @@ def video_upload(video_path, title, **kwargs):
 
     print(r)
 
+    return r
+
 
 def resumable_upload(request, retries = 5):
     while retries > 0:
@@ -138,5 +148,7 @@ def resumable_upload(request, retries = 5):
     return None
 
 
+
 if __name__ == '__main__':
-    video_upload('video_text_done.mp4', 'TikTok')
+    server.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    video_upload(video_path='video_text_done.mp4', title='TikTok')
